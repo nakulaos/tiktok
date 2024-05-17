@@ -1,0 +1,149 @@
+syntax = "v1"
+
+type (
+	CreateVideoReq {
+		Url      string `json:"url" validate:"required" msg:"UrlFormat"` //视频地址
+		CoverUrl string `json:"coverUrl" validate:"required" msg:"CoverUrlFormat"`
+		Title    string `json:"title" validate:"required" msg:"TitleFormat"`
+		Category int    `json:"category" validate:"required" msg:"CategoryFormat"`
+	}
+	UserVideoListReq {
+		ToUid int `json:"to_user_id" validate:"required" msg:"ToUidFormat"`
+	}
+	UserVideoListResp {
+		VideoList []VideoInfo `json:"video_list"`
+	}
+	VideoInfo {
+		VideoId       int64    `json:"video_id"`
+		Author        UserInfo `json:"author"`
+		PlayUrl       string   `json:"play_url"`
+		CoverUrl      string   `json:"cover_url"`
+		FavoriteCount int64    `json:"favorite_count"`
+		CommentCount  int64    `json:"comment_count"`
+		StarCount     int64    `json:"star_count"`
+		IsStar        bool     `json:"is_star"`
+		IsFavorite    bool     `json:"is_favorite"`
+		Title         string   `json:"title"`
+		CreateTime    string   `json:"create_time"`
+		Duration      string   `json:"duration"`
+	}
+	UserInfo {
+		Id              uint32 `json:"id"`
+		Name            string `json:"name"`
+		Avatar          string `json:"avatar"`
+		Gender          uint32 `json:"gender"`
+		Signature       string `json:"signature"`
+		BackgroundImage string `json:"background_image"` //用户个人页顶部大图
+		FollowCount     uint32 `json:"follow_count"`
+		FollowerCount   uint32 `json:"follower_count"`
+		TotalFavorited  uint32 `json:"total_favorited"`
+		WorkCount       uint32 `json:"work_count"`
+		FavoriteCount   uint32 `json:"favorite_count"`
+		IsFollow        bool   `json:"is_follow"`
+		FriendCount     int64  `json:"friend_count"`
+	}
+	VideosListResp {
+		Videos []VideoInfo `json:"video_list"`
+	}
+	CategoryVideosListReq {
+		Category uint32 `form:"category"`
+	}
+	CategoryVideosListResp {
+		Videos []VideoInfo `json:"video_list"`
+	}
+	RecommendVideosListReq {
+		Offset        int64 `json:"offset" validate:"required" msg:"OffsetFormat"`
+		ReadedVideoId int64 `json:"readed_videoId" validate:"required,min=1" msg:"ReadedVideoIdFormat"`
+	}
+	RecommendVideosListResp {
+		Videos []VideoInfo `json:"video_list"`
+	}
+	PopularVideosListReq {
+		Offset        int64 `json:"offset" validate:"required" msg:"OffsetFormat"`
+		ReadedVideoId int64 `json:"readed_videoId" validate:"required,min=1" msg:"ReadedVideoIdFormat"`
+	}
+	PopularVideosListResp {
+		Videos []VideoInfo `json:"video_list"`
+	}
+	DurationTestReq {
+		Duration string `json:"duration" validate:"required" msg:"DurationFormat"`
+		Vid      int64  `json:"video_id" validate:"required" msg:"VidFormat"`
+	}
+	HistoryVideosResp {
+		VideoList []VideoInfo `json:"video_list"`
+	}
+	NeighborsVideoReq {
+		Vid int64 `form:"video_id" validate:"required" msg:"VidFormat"`
+	}
+	NeighborsVideoResp {
+		VideoList []VideoInfo `json:"video_list"`
+	}
+	DeleteVideoReq {
+		Vid int64 `json:"video_id" validate:"required" msg:"VidFormat"`
+	}
+	SearchEsReq {
+		Content string `json:"content" validate:"required" msg:"ContentFormat"`
+	}
+	SearchEsResp {
+		VideoList []VideoInfo `json:"video_list"`
+	}
+	FindVideoByIdReq {
+		Vid int64 `form:"video_id" validate:"required" msg:"VidFormat"`
+	}
+	FindVideoByIdResp {
+		Video VideoInfo `json:"video_info"`
+	}
+)
+
+@server (
+	prefix:     /v1
+	middleware: SetContextInfoMidlleware
+)
+service feed {
+	@handler VideosList
+	get /feed/VideosList returns (VideosListResp)
+}
+
+@server (
+	jwt:        Auth // 开启 jwt 认证
+	prefix:     /v1
+	middleware: SetContextInfoMidlleware,AuthorityMiddleware
+)
+service feed {
+	@handler CreateVideo
+	post /feed/create (CreateVideoReq)
+
+	@handler UserVideosList
+	post /feed/UserVideosList (UserVideoListReq) returns (UserVideoListResp)
+
+	@handler CategoryVideosList
+	get /feed/CategoryVideosList (CategoryVideosListReq) returns (CategoryVideosListResp)
+
+	@handler RecommendVideos
+	post /feed/recommends (RecommendVideosListReq) returns (RecommendVideosListResp)
+
+	@handler PopularVideos
+	post /feed/populars (PopularVideosListReq) returns (PopularVideosListResp)
+
+	@handler CreateVideoTest
+	post /feed/createst (CreateVideoReq)
+
+	@handler DurationTest
+	post /feed/duration (DurationTestReq)
+
+	@handler HistoryVideos
+	get /feed/history returns (HistoryVideosResp)
+
+	@handler NeighborsVideos
+	get /feed/neighbors (NeighborsVideoReq) returns (NeighborsVideoResp)
+
+	@handler DeleteVideo
+	post /feed/deleteViedo (DeleteVideoReq)
+
+	@handler SearchEs
+	post /feed/searcheEs (SearchEsReq) returns (SearchEsResp)
+
+	@handler FindVideo
+	get /feed/videoinfo (FindVideoByIdReq) returns (FindVideoByIdResp)
+}
+

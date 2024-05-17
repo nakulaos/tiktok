@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  build-backend:
+    image: golang:latest
+    volumes:
+      - ./:/build
+      - ./data/go:/go
+    entrypoint:  sh -c "cd /build/backend && make download && make build"
+
+
+

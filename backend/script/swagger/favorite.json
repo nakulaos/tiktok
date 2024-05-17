@@ -1,0 +1,332 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "",
+    "version": ""
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/favorite/action": {
+      "post": {
+        "operationId": "FavoriteAction",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/actionReq"
+            }
+          }
+        ],
+        "tags": [
+          "favorite"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/v1/favorite/list": {
+      "get": {
+        "operationId": "FavoriteList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/listResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "to_user_id",
+            "description": " 用户id",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "favorite"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/v1/star/action": {
+      "post": {
+        "operationId": "StarAction",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/actionReq"
+            }
+          }
+        ],
+        "tags": [
+          "favorite"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/v1/star/list": {
+      "get": {
+        "operationId": "StarList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/listResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "to_user_id",
+            "description": " 用户id",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "favorite"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "signature": {
+          "type": "string"
+        },
+        "follow_count": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "follower_count": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "total_favorited": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "work_count": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "favorite_count": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "is_follow": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "friend_count": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "User",
+      "required": [
+        "id",
+        "name",
+        "gender",
+        "avatar",
+        "signature",
+        "follow_count",
+        "follower_count",
+        "total_favorited",
+        "work_count",
+        "favorite_count",
+        "is_follow",
+        "friend_count"
+      ]
+    },
+    "VideoInfo": {
+      "type": "object",
+      "properties": {
+        "video_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "author": {
+          "$ref": "#/definitions/User"
+        },
+        "play_url": {
+          "type": "string"
+        },
+        "cover_url": {
+          "type": "string"
+        },
+        "favorite_count": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "comment_count": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "star_count": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "is_star": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "is_favorite": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "title": {
+          "type": "string"
+        },
+        "create_time": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "string"
+        }
+      },
+      "title": "VideoInfo",
+      "required": [
+        "video_id",
+        "author",
+        "play_url",
+        "cover_url",
+        "favorite_count",
+        "comment_count",
+        "star_count",
+        "is_star",
+        "is_favorite",
+        "title",
+        "create_time",
+        "duration"
+      ]
+    },
+    "actionReq": {
+      "type": "object",
+      "properties": {
+        "video_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "action_type": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "actionReq",
+      "required": [
+        "video_id",
+        "VideoIdFormat",
+        "action_type",
+        "ActionTypeFormat"
+      ]
+    },
+    "listReq": {
+      "type": "object",
+      "properties": {
+        "to_user_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 用户id"
+        }
+      },
+      "title": "listReq",
+      "required": [
+        "UserIdFormat",
+        "to_user_id"
+      ]
+    },
+    "listResp": {
+      "type": "object",
+      "properties": {
+        "video_list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/VideoInfo"
+          }
+        }
+      },
+      "title": "listResp",
+      "required": [
+        "video_list"
+      ]
+    }
+  },
+  "securityDefinitions": {
+    "apiKey": {
+      "type": "apiKey",
+      "description": "Enter JWT Bearer token **_only_**",
+      "name": "Authorization",
+      "in": "header"
+    }
+  }
+}

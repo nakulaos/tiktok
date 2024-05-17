@@ -1,0 +1,89 @@
+syntax = "v1"
+
+type (
+	actionReq {
+		VideoId     int64  `json:"video_id" validate:"required" msg:"VideoIdFormat"` // 视频id
+		ActionType  int32  `json:"action_type" validate:"required" msg:"ActionTypeFormat"` // 1-发布评论，2-删除评论
+		CommentText string `json:"comment_text" validate:"required" msg:"CommentTextFormat"` // 用户填写的评论内容，在action_type=1的时候使用
+		CommentId   int64  `json:"comment_id" validate:"required" msg:"CommentIDFormat"` // 要删除的评论id，在action_type=2的时候使用
+	}
+	actionResp {
+		CommentId int64 `json:"comment_id"`
+	}
+	listReq {
+		VideoId int64 `form:"video_id" validate:"required" msg:"VideoIdFormat"` // 视频id
+	}
+	listResp {
+		CommentList []CommentInfo `json:"comment_list"`
+	}
+	CommentInfo {
+		CommentId  int64  `json:"comment_id"`
+		User       User   `json:"user"`
+		Content    string `json:"content"`
+		CreateDate string `json:"create_date"`
+	}
+	User {
+		Id             uint32 `json:"id"`
+		Name           string `json:"name"`
+		Gender         uint32 `json:"gender"`
+		Avatar         string `json:"avatar"`
+		Signature      string `json:"signature"`
+		FollowCount    uint32 `json:"follow_count"`
+		FollowerCount  uint32 `json:"follower_count"`
+		TotalFavorited uint32 `json:"total_favorited"`
+		WorkCount      uint32 `json:"work_count"`
+		FavoriteCount  uint32 `json:"favorite_count"`
+		IsFollow       bool   `json:"is_follow"`
+		FriendCount    int64  `json:"friend_count"`
+	}
+	//弹幕功能
+	DanmuActionReq {
+		Author    int64   `json:"author" validate:"required" msg:"AuthorFormat"`
+		Color     int64   `json:"color" validate:"required" msg:"ColorFormat"`
+		VideoId   int64   `json:"id" validate:"required" msg:"VideoIdFormat"` // 视频id
+		DanmuText string  `json:"text" validate:"required" msg:"DanmuTextFormat"` // 用户填写的弹幕内容
+		SendTime  float32 `json:"time" validate:"required" msg:"SendTimeFormat"` // 用户发送弹幕的时间段
+		Token     string  `json:"token" validate:"required" msg:"TokenFormat"`
+		Type      int64   `json:"type" validate:"required" msg:"TypeFormat"`
+	}
+	DanmuActionResp  {}
+	DanmulistReq {
+		VideoId int64 `form:"id" validate:"required" msg:"VideoIdFormat"` // 视频id
+	}
+	DanmulistResp {
+		DanmuList []DanmuInfo `json:"data"`
+	}
+	DanmuInfo {
+		SendTime float32 `json:"send_time"`
+		IsShow   int     `json:"is_ihow"`
+		UserId   int64   `json:"user_id"`
+		VideoId  int64   `json:"video_id"`
+		Content  string  `json:"content"`
+	}
+)
+
+@server (
+	prefix:     /v1
+	middleware: SetContextInfoMidlleware
+)
+service comment {
+	@handler DanmuAction
+	post /danmu/listv3 (DanmuActionReq) returns (DanmuActionResp)
+
+	@handler GetDanmuList
+	get /danmu/listv3 (DanmulistReq) returns (DanmulistResp)
+}
+
+@server (
+	jwt:        Auth
+	prefix:     /v1
+	middleware: SetContextInfoMidlleware,AuthorityMiddleware
+)
+service comment {
+	@handler CommentAction
+	post /comment/action (actionReq) returns (actionResp)
+
+	@handler GetCommentList
+	get /comment/list (listReq) returns (listResp)
+}
+

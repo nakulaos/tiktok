@@ -1,0 +1,59 @@
+Name: User
+Host: 0.0.0.0
+Port: 8888
+Timeout: 30000
+MaxBytes: 104857600
+
+Auth:
+  AccessSecret: fajkfhakljflajfdaljflka
+  AccessExpire: 86400
+
+#I18nConf:
+#  Dir: ../../resource
+#  Language:
+#    - zh
+#    - en
+#    - de
+
+UserRpc:
+  Etcd:
+    Hosts:
+      - etcd:2379
+    Key: user.rpc
+
+
+RecommendUrl: http://gorse:8088
+
+DB:
+  DataSource: root:asdasd@tcp(mysql:3306)/tiktok?charset=utf8&parseTime=True&loc=Local
+
+Casbin:
+  Dir: script/casbin/rbac_model.conf
+  Table: casbin_rule
+
+Cache:
+  - Host: redis:6379
+
+JWTPrefix: token_blacklist
+
+Prometheus:
+  Host: 0.0.0.0
+  Port: 9391
+  Path: /metrics
+
+
+Telemetry:
+  Name: user.api
+  Endpoint: http://jaeger:14268/api/traces
+  Sampler: 1.0
+  Batcher: jaeger
+
+
+QiNiu:
+  AccessKey: mL9jlJkinkC50D4F_pBX2BXN-0uUyEpHekeNI7Cn
+  SecretKey: LpHacGHarKa2tj5kA2GVyOYV02Tw8ETXEJmP0BYo
+  Bucket: nakulaos
+  Cdn: http://qny.hallnakulaos.cn
+  Zone: z2
+  Size: 5
+  Prefix: "tiktok"

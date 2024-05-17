@@ -1,0 +1,69 @@
+{
+  "Success": "成功",
+  "Server common error": "服务器错误",
+  " Request param error": "请求参数错误",
+
+  "UserNotExistError": "用户名或密码错误",
+  "UserExistError": "用户名已存在",
+  "UserUnExistError": "用户不存在",
+  "UserUploadImgError": "用户上传图片失败",
+  "UserUploadVideoError": "用户上传视频失败",
+  "EmailExistError": "邮箱已存在",
+  "PhoneExistError": "手机号已存在",
+
+  "common": {
+    "success": "成功",
+    "failed": "失败",
+    "updateSuccess": "更新成功",
+    "updateFailed": "更新失败",
+    "createSuccess": "新建成功",
+    "createFailed": "新建失败",
+    "deleteSuccess": "删除成功",
+    "deleteFailed": "删除失败",
+    "changeStatusSuccess": "状态修改成功",
+    "changeStatusFailed": "状态修改失败",
+    "targetNotExist": "目标不存在",
+    "databaseError": "数据库错误",
+    "redisError": "Redis 错误",
+    "permissionDeny": "用户无权限访问此接口",
+    "constraintError": "操作失败: 数据冲突",
+    "validationError": "操作失败: 校验失败",
+    "notSingularError": "操作失败: 数据不唯一",
+    "serviceUnavailable": "服务不可用，请检查服务是否已启用",
+    "alreadyExists": "元素已经存在:{{.reason}}",
+    "databaseError": "数据库错误"
+  },
+  "RequestErr": {
+    "decFormat": "个性签名应在250字以内",
+    "usernameFormat": "用户名应在3-12个字符之间，且只包含数字，字母",
+    "passwordFormat": "密码应在8-20个字符之间，且同时包含数字，大小字母，特殊字符",
+    "emailFormat": "邮箱为空或邮箱格式错误",
+    "phoneFormat": "手机号为空或手机号格式错误",
+    "decFormat": "个人简介应在250字以内",
+    "avatarFormat": "图片链接应在250字以内",
+    "backgroundImageFormat": "图片链接应在250字以内",
+    "nicknameFormat": "昵称应在2-12个字符之间",
+    "genderFormat": "性别应为男，女，保密",
+    "ToUserIDFormat": "被关注用户ID格式错误,id 必须大于0",
+    "ActionFormat": "关注参数错误，只能为1和2",
+    "UidFormat": "用户ID格式错误，id 必须大于0"
+  },
+  "user": {
+      "UserNotExistError": "用户名或密码错误",
+      "UserExistError": "用户名已存在",
+      "UserPasswordError": "密码错误",
+    "UserUnExistError": "用户不存在",
+    "PhoneExistError": "手机号已存在",
+    "EmailExistError": "邮箱已存在"
+  },
+  "relation": {
+    "LikeParameterError": "点赞参数错误",
+    "LikeExistError": "已点赞",
+    "LikeUnExistError": "未点赞",
+    "RelationUserNotExistError": "关注的用户不存在",
+    "RelationUnableFavorSelfError": "不能关注自己",
+    "RelationUnableFavorMoreError": "用户已关注",
+    "RelationUnableUnFavorNotFavorUserError": "用户未关注"
+  }
+
+}

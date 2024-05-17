@@ -1,0 +1,5 @@
+gitops:
+  manifest_projects:
+    - id: "root/tiktok"
+      paths:
+        - glob: "/deploy/*.{yml,yaml,json}"

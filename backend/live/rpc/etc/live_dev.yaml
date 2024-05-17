@@ -1,0 +1,46 @@
+Name: live.rpc
+ListenOn: 0.0.0.0:9065
+Timeout: 30000
+Etcd:
+  Hosts:
+    - etcd:2379
+  Key: live.rpc
+
+DB:
+  DataSource: root:asdasd@tcp(mysql:3306)/tiktok?charset=utf8&parseTime=True&loc=Local
+
+RecommendUrl: http://gorse:8088
+DataSource: root:asdasd@tcp(mysql:3306)/tiktok?charset=utf8&parseTime=True&loc=Local
+Cache:
+  - Host: redis:6379
+
+Prometheus:
+  Host: 0.0.0.0
+  Port: 9493
+  Path: /metrics
+
+Telemetry:
+  Name: live.rpc
+  Endpoint: http://jaeger:14268/api/traces
+  Sampler: 1.0
+  Batcher: jaeger
+
+UserRpc:
+  Etcd:
+    Hosts:
+      - etcd:2379
+    Key: user.rpc
+
+QiNiu:
+  AccessKey: mL9jlJkinkC50D4F_pBX2BXN-0uUyEpHekeNI7Cn
+  SecretKey: LpHacGHarKa2tj5kA2GVyOYV02Tw8ETXEJmP0BYo
+  Bucket: nakulaos
+  Cdn: http://qny.hallnakulaos.cn
+  Zone: z2
+  Size: 5
+  Prefix: "tiktok"
+
+  LiveBucket: nakulaos
+  PublishUrl: rtmp://pili-publish.qny.hallnakulaos.cn
+  LiveUrl: pili-live-hls.qny.hallnakulaos.cn
+  LiveCoverUrl: pili-snapshot.qny.hallnakulaos.cn

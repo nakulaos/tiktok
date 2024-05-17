@@ -1,0 +1,64 @@
+syntax = "v1"
+
+type (
+	actionReq {
+		ToUserID int64 `json:"toUserId" validate:"required,min=1" msg:"ToUserIDFormat"`
+		Action   int32 `json:"action" validate:"required,min=1,max=2" msg:"ActionFormat"`
+	}
+	FavoriteListReq {
+		Uid int64 `form:"uid" validate:"required,min=1" msg:"UidFormat"`
+	}
+	UserInfo {
+		Id              int64  `json:"id"`
+		Name            string `json:"name"`
+		Gender          int64  `json:"gender"`
+		Mobile          string `json:"mobile"`
+		Avatar          string `json:"avatar"`
+		Dec             string `json:"dec"`
+		BackgroundImage string `json:"background_image"`
+		FollowCount     uint32 `json:"follow_count"`
+		FollowerCount   uint32 `json:"follower_count"`
+		TotalFavorited  uint32 `json:"total_favorited"`
+		WorkCount       uint32 `json:"work_count"`
+		FavoriteCount   uint32 `json:"favorite_count"`
+		IsFollow        bool   `json:"is_follow"`
+		CoverUrl        string `json:"cover_url"`
+		VideoId         int64  `json:"video_id"`
+		FriendCount     int64  `json:"friend_count"`
+	}
+	FavoriteListResp {
+		List []UserInfo `json:"list"`
+	}
+	FollowerListReq {
+		Uid int64 `form:"uid" validate:"required,min=1" msg:"UidFormat"`
+	}
+	FollowerListResp {
+		List []UserInfo `json:"list"`
+	}
+	FriendListReq {
+		Uid int64 `form:"uid" validate:"required,min=1" msg:"UidFormat"`
+	}
+	FriendListResp {
+		List []UserInfo `json:"list"`
+	}
+)
+
+@server (
+	jwt:        Auth // 开启 jwt 认证
+	prefix:     /v1
+	middleware: SetContextInfoMidlleware,AuthorityMiddleware
+)
+service relation {
+	@handler FavoriteAction
+	post /relation/action (actionReq)
+
+	@handler FavoriteList
+	get /relation/favoriteList (FavoriteListReq) returns (FavoriteListResp)
+
+	@handler FollowerList
+	get /relation/followerList (FollowerListReq) returns (FollowerListResp)
+
+	@handler FriendList
+	get /relation/friendList (FriendListReq) returns (FriendListResp)
+}
+

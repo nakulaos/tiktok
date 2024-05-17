@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+package relation;
+
+option go_package="./relation";
+
+message FavoriteRequest{
+  int64 Uid = 1;
+  int64 ToUid = 2;
+  int32 Action = 3;
+}
+
+message FavoriteResponse{
+
+}
+
+message FavoriteListReq{
+  int64 Uid = 1;
+  int64 Act_user=2;
+}
+
+message UserInfo{
+  int64 Id = 1;
+  string NickName = 2;
+  int64 Gender = 3;
+  string Mobile = 4;
+  string Avatar =5;
+  string Dec = 6;
+  string Background_image=7;
+  int64 Video_id=8;
+  string Cover_url=9;
+  uint32 follow_count = 10; // 关注总数
+  uint32 follower_count = 11; // 粉丝总数
+  bool is_follow = 12; // true-已关注，false-未关注
+  uint32 total_favorited = 13; //获赞数量
+  uint32 work_count = 14; //作品数量
+  uint32 favorite_count = 15; //点赞数量
+  int64 friend_count=16;
+  string email=17;
+}
+
+message FavoriteListResp{
+  repeated UserInfo list=1;
+}
+
+message FollowerListReq{
+  int64 Uid = 1;
+  int64 Act_user=2;
+}
+
+message FollowerListResp{
+  repeated UserInfo list=1;
+}
+
+message FriendListReq{
+  int64 Uid = 1;
+  int64 Act_user=2;
+}
+
+message FriendListResp{
+  repeated UserInfo list=1;
+}
+
+message FollowerCountReq{
+  int64 Uid = 1;
+}
+
+message FollowerCountResp{
+  int64 Count=1;
+}
+
+message IsFollowingReq{
+  int64 ActorId = 1;
+  int64 UserId=2;
+}
+
+message IsFollowingResp{
+  bool flag=1;
+}
+
+service Relation {
+  rpc Favorite(FavoriteRequest) returns(FavoriteResponse);
+  rpc FavoriteList(FavoriteListReq) returns(FavoriteListResp);
+  rpc FollowerList(FollowerListReq) returns(FollowerListResp);
+  rpc FriendList(FriendListReq) returns(FriendListResp);
+  rpc GetFollowCount(FollowerCountReq) returns(FollowerCountResp);
+  rpc GetFollowerCount(FollowerCountReq) returns(FollowerCountResp);
+  rpc IsFollowing(IsFollowingReq) returns(IsFollowingResp);
+}

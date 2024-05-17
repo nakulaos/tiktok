@@ -1,0 +1,6 @@
+/build
+/node_moduls
+/config
+.eslintrc.js
+/desktop/dist
+/desktop/node_modules

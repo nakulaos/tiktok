@@ -1,0 +1,98 @@
+# my global config
+global:
+  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+# - "first_rules.yml"
+# - "second_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: "prometheus"
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ["localhost:9090"]
+
+
+  - job_name: 'tiktok'
+    static_configs:
+      # 目标的采集地址
+      - targets: ['tiktok-userapi:9391']
+        labels:
+          # 自定义标签
+          app: 'user-api'
+          env: 'dev'
+      - targets: [ 'tiktok-userrpc:9491' ]
+        labels:
+          # 自定义标签
+          app: 'user-rpc'
+          env: 'dev'
+
+      - targets : [ 'tiktok-relationapi:9392' ]
+        labels :
+          # 自定义标签
+          app : 'relation-api'
+          env : 'dev'
+      - targets : [ 'tiktok-relationrpc:9492' ]
+        labels :
+          # 自定义标签
+          app : 'relation-rpc'
+          env : 'dev'
+      - targets : [ 'tiktok-favoriteapi:9393' ]
+        labels :
+          # 自定义标签
+          app : 'favorite-api'
+          env : 'dev'
+      - targets : [ 'tiktok-favoriterpc:9493' ]
+        labels :
+          # 自定义标签
+          app : 'favorite-rpc'
+          env : 'dev'
+
+      - targets : [ 'tiktok-feedapi:9394' ]
+        labels :
+          # 自定义标签
+          app : 'feed-api'
+          env : 'dev'
+      - targets : [ 'tiktok-feedrpc:9494' ]
+        labels :
+          # 自定义标签
+          app : 'feed-rpc'
+          env : 'dev'
+      - targets : [ 'tiktok-commentapi:9395' ]
+        labels :
+          # 自定义标签
+          app : 'comment-api'
+          env : 'dev'
+      - targets : [ 'tiktok-commentrpc:9495' ]
+        labels :
+          # 自定义标签
+          app : 'comment-rpc'
+          env : 'dev'
+      - targets : [ 'tiktok-liveapi:9396' ]
+        labels :
+          # 自定义标签
+          app : 'live-api'
+          env : 'dev'
+      - targets : [ 'tiktok-liverpc:9496' ]
+        labels :
+          # 自定义标签
+          app : 'live-rpc'
+          env : 'dev'
+
+

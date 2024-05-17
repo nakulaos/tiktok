@@ -1,0 +1,1 @@
+SELECT COUNT(id) FROM `relations` WHERE follower_id = 2 AND del_state = 0;

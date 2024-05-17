@@ -1,0 +1,7 @@
+backend/deploy/google/*
+data/*
+/data/
+/venv/
+/frontend/.idea/
+/data/
+/script/

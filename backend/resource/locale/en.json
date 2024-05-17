@@ -1,0 +1,68 @@
+{
+  "Success": "Success",
+  "Server common error": "Server common error",
+  "Request param error": "Request param error",
+
+  "UserNotExistError": "Username or password is incorrect",
+  "UserExistError": "Username already exists",
+  "UserUnExistError": "User does not exist",
+  "UserUploadImgError": "User image upload failed",
+  "UserUploadVideoError": "User video upload failed",
+  "EmailExistError": "Email already exists",
+  "PhoneExistError": "Phone number already exists",
+
+  "common": {
+    "success": "Successfully",
+    "failed": "Failed",
+    "updateSuccess": "Update successfully",
+    "updateFailed": "Update failed",
+    "createSuccess": "Create successfully",
+    "createFailed": "Create failed",
+    "deleteSuccess": "Delete successfully",
+    "deleteFailed": "Delete failed",
+    "changeStatusSuccess": "Change status successfully",
+    "changeStatusFailed": "Change status failed",
+    "targetNotExist": "Target does not exist",
+    "databaseError": "Database error",
+    "redisError": "Redis error",
+    "permissionDeny": "User does not have permission to access this interface",
+    "constraintError": "Operation failed: Data conflict",
+    "validationError": "Operation failed: Validate failed",
+    "notSingularError": "Operation failed: Data is not unique",
+    "serviceUnavailable": "Service is unavailable, please check if the service is enabled",
+    "alreadyExists": "The entry already exists:{{.reason}}"
+  },
+
+  "RequestErr": {
+    "decFormat": "Personal signature should be within 250 characters",
+    "usernameFormat": "Username should be between 3-12 characters and only contain numbers and letters",
+    "passwordFormat": "Password should be between 6-20 characters and contain numbers, upper letters,lower letters and special characters",
+    "emailFormat": "Email is empty or the email format is incorrect",
+    "phoneFormat": "Phone number is empty or the phone number format is incorrect",
+    "avatarFormat": "Image link should be within 250 characters",
+    "backgroundImageFormat": "Image link should be within 250 characters",
+    "nicknameFormat": "Nickname should be between 2-12 characters",
+    "genderFormat": "Gender should be male, female, or confidential",
+    "ToUserIDFormat": "The watched user ID format is incorrect, the ID must be greater than 0",
+    "ActionFormat": "Attention parameter error, can only be 1 and 2",
+    "UidFormat": "User ID format error, ID must be greater than 0"
+  },
+  "user": {
+    "UserNotExistError": "Username or password is incorrect",
+    "UserExistError": "Username already exists",
+    "UserPasswordError": "Password is incorrect",
+    "UserUnExistError": "User does not exist",
+    "PhoneExistError": "Phone number already exists",
+    "EmailExistError": "Email already exists"
+  },
+  "Relationship":{
+    "LikeParameterError": "LikeParameterError",
+    "LikeExitError": "Liked",
+    "LikeUnExitError": "Not liked",
+    "RelationUserNotExitError": "The following user does not exist",
+    "RelationUnableFavorSelfError": "Cannot follow oneself",
+    "RelationUnableFavorMoreError": "User has followed",
+    "RelationUnableUnFavorNotFavorUserError": "User not following"
+  }
+
+}

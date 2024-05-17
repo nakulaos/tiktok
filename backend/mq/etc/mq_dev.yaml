@@ -1,0 +1,51 @@
+Name: mq
+Host: 0.0.0.0
+Port: 8892
+Timeout: 30000
+
+KqJobConsumer:
+  Name: kqJobConsumer
+  Brokers:
+    -  kafka:9092
+  Group: jobConsumer
+  Topic: job
+  Offset: first
+  Consumers: 8
+  Processors: 8
+
+KqUploadFileConsumer :
+  Name : KqUploadFileConsumer
+  Brokers :
+    - kafka:9092
+  Group : KqUploadFileConsumer
+  Topic : uploadVideos
+  Offset : first
+  Consumers : 8
+  Processors : 8
+
+QiNiu :
+  AccessKey : mL9jlJkinkC50D4F_pBX2BXN-0uUyEpHekeNI7Cn
+  SecretKey : LpHacGHarKa2tj5kA2GVyOYV02Tw8ETXEJmP0BYo
+  Bucket : nakulaos
+  Cdn : http://qny.hallnakulaos.cn
+  Zone : z2
+  Size : 5
+  Prefix : "tiktok"
+
+KqJobPush :
+  Brokers :
+    - kafka:9092
+  Topic : job
+
+KqVideoPusher:
+  Brokers :
+    - kafka:9092
+  Topic : uploadVideos
+
+FeedRpc:
+  Etcd:
+    Hosts:
+      - etcd:2379
+    Key: feed.rpc
+
+RecommendUrl: http://gorse:8088

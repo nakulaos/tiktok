@@ -1,0 +1,523 @@
+version: '3'
+services:
+  #user-rpc
+  tiktok-userrpc:
+    build:
+      context: ./backend
+      dockerfile: deploy/user_rpc.Dockerfile
+    container_name: tiktok-userrpc
+    env_file:
+      - .env
+
+    networks:
+      - tiktok-network
+    restart: unless-stopped
+
+    depends_on:
+      - mysql
+      - redis
+  tiktok-favoriterpc:
+    build:
+      context: ./backend
+      dockerfile: deploy/favorite_rpc.Dockerfile
+    container_name: tiktok-favoriterpc
+    env_file:
+      - .env
+    networks:
+      - tiktok-network
+    restart: unless-stopped
+
+    depends_on:
+      - mysql
+      - redis
+      - tiktok-userrpc
+  tiktok-relationrpc :
+    build :
+      context : ./backend
+      dockerfile : deploy/relation_rpc.Dockerfile
+    container_name : tiktok-relationrpc
+    env_file :
+      - .env
+
+    networks :
+      - tiktok-network
+    restart : unless-stopped
+
+    depends_on :
+      - mysql
+      - redis
+      - tiktok-userrpc
+  tiktok-feedrpc :
+    build :
+      context : ./backend
+      dockerfile : deploy/feed_rpc.Dockerfile
+    container_name : tiktok-feedrpc
+    env_file :
+      - .env
+
+    networks :
+      - tiktok-network
+    restart : unless-stopped
+
+    depends_on :
+      - mysql
+      - redis
+      - tiktok-userrpc
+      - kafka
+  tiktok-commentrpc :
+    build :
+      context : ./backend
+      dockerfile : deploy/comment_rpc.Dockerfile
+    container_name : tiktok-commentrpc
+    env_file :
+      - .env
+
+    networks :
+      - tiktok-network
+    restart : unless-stopped
+
+    depends_on :
+      - mysql
+      - redis
+      - tiktok-userrpc
+  tiktok-liverpc :
+    build :
+      context : ./backend
+      dockerfile : deploy/live_rpc.Dockerfile
+    container_name : tiktok-liverpc
+    env_file :
+      - .env
+
+    networks :
+      - tiktok-network
+    restart : unless-stopped
+
+    depends_on :
+      - mysql
+      - redis
+  tiktok-userapi:
+    build:
+      context: ./backend
+      dockerfile: deploy/user_api.Dockerfile
+    container_name: tiktok-userapi
+    env_file:
+      - .env
+    ports:
+      - "8888:8888"
+
+    networks:
+      - tiktok-network
+    restart: unless-stopped
+
+    depends_on:
+      - mysql
+      - redis
+      - tiktok-userrpc
+
+  tiktok-relationapi :
+    build :
+      context : ./backend
+      dockerfile : deploy/relation_api.Dockerfile
+    container_name : tiktok-relationapi
+    env_file :
+      - .env
+    ports :
+      - "8889:8889"
+
+    networks :
+      - tiktok-network
+    restart : unless-stopped
+
+    depends_on :
+      - mysql
+      - redis
+      - tiktok-relationrpc
+  tiktok-favoriteapi :
+    build :
+      context : ./backend
+      dockerfile : deploy/favorite_api.Dockerfile
+    container_name : tiktok-favoriteapi
+    env_file :
+      - .env
+    ports :
+      - "8890:8890"
+
+    networks :
+      - tiktok-network
+    restart : unless-stopped
+
+    depends_on :
+      - mysql
+      - redis
+      - tiktok-favoriterpc
+  tiktok-feedapi :
+    build :
+      context : ./backend
+      dockerfile : deploy/feed_api.Dockerfile
+    container_name : tiktok-feedapi
+    env_file :
+      - .env
+    ports :
+      - "8891:8891"
+
+    networks :
+      - tiktok-network
+    restart : unless-stopped
+
+    depends_on :
+      - mysql
+      - redis
+      - tiktok-feedrpc
+  tiktok-mqapi :
+    build :
+      context : ./backend
+      dockerfile : deploy/mq_api.Dockerfile
+    container_name : tiktok-mqapi
+    env_file :
+      - .env
+    ports :
+      - "8892:8892"
+
+    networks :
+      - tiktok-network
+    restart : unless-stopped
+
+    depends_on :
+      - mysql
+      - redis
+      - tiktok-feedrpc
+      - kafka
+  tiktok-commentapi :
+    build :
+      context : ./backend
+      dockerfile : deploy/comment_api.Dockerfile
+    container_name : tiktok-commentapi
+    env_file :
+      - .env
+    ports :
+      - "8893:8893"
+
+    networks :
+      - tiktok-network
+    restart : unless-stopped
+
+    depends_on :
+      - mysql
+      - redis
+      - tiktok-feedrpc
+      - tiktok-commentrpc
+      - kafka
+  tiktok-liveapi :
+    build :
+      context : ./backend
+      dockerfile : deploy/live_api.Dockerfile
+    container_name : tiktok-liveapi
+    env_file :
+      - .env
+    ports :
+      - "8894:8894"
+
+    networks :
+      - tiktok-network
+    restart : unless-stopped
+
+    depends_on :
+      - mysql
+      - redis
+      - tiktok-liverpc
+  redis:
+    container_name: redis
+    image: redis:6.2.5
+    ports:
+      - "36379:6379"
+    networks:
+      - tiktok-network
+    environment:
+      TZ: "Asia/Shanghai"
+    volumes:
+      - ./data/redis/data:/data:rw
+    restart: unless-stopped
+    privileged: true
+
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    environment:
+      TZ: "Asia/Shanghai"
+      MYSQL_ROOT_PASSWORD: "asdasd"
+    ports:
+      - 13306:3306
+    volumes:
+      # 这里有问题,我在wsl2只能用下面的，原因未知，正常应该是可以用下面第一行的
+#      - ./data/mysql/data:/var/lib/mysql
+      - /data/mysql/data:/var/lib/mysql
+      - ./backend/sql:/sql
+#    command:
+#      # 将mysql8.0默认密码策略 修改为 原先 策略 (mysql8.0对其默认策略做了更改 会导致密码无法匹配)
+#      # Modify the Mysql 8.0 default password strategy to the original strategy (MySQL8.0 to change its default strategy will cause the password to be unable to match)
+#      #      --default-authentication-plugin=mysql_native_password
+#      --character-set-server=utf8mb4
+#      --collation-server=utf8mb4_general_ci
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    privileged: true
+    restart: unless-stopped
+    networks:
+      - tiktok-network
+
+  etcd:
+    image: quay.io/coreos/etcd:v3.4.15
+    container_name: etcd
+    command: |
+      /usr/local/bin/etcd
+        --name etcd0
+        --advertise-client-urls http://etcd:2379
+        --listen-client-urls http://0.0.0.0:2379
+        --listen-peer-urls http://0.0.0.0:2380
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    networks:
+      - tiktok-network
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.28.1
+    container_name: prometheus
+    volumes:
+      - ./backend/script/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./data/prometheus/data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    ports:
+      - "9090:9090"
+    networks:
+      - tiktok-network
+    restart: unless-stopped
+
+  grafane:
+    image: grafana/grafana:8.0.6
+    container_name: grafana
+    hostname: grafana
+    user: root
+    environment:
+      TZ: "Asia/Shanghai"
+    ports:
+      - "3001:3000"
+    networks:
+      - tiktok-network
+    volumes:
+      - ./data/grafana/data:/var/lib/grafana
+    restart: unless-stopped
+
+
+  ngnix:
+    image: nginx:1.21.5
+    container_name: nginx-gateway
+    ports:
+      - 8081:8081
+    volumes:
+      - ./backend/script/nginx/conf.d/nginx.conf:/etc/nginx/nginx.conf
+      - ./data/nginx/logs:/var/log/nginx
+    networks:
+      - tiktok-network
+    depends_on:
+      - tiktok-userapi
+    privileged: true
+    environment:
+      - TZ=Asia/Shanghai
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.4
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - TZ=Asia/Shanghai
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - tiktok-network
+    restart: unless-stopped
+    user: root
+    privileged: true
+    volumes:
+      - ./data/elasticsearch/data:/usr/share/elasticsearch/data
+      - ./data/elasticsearch/logs:/usr/share/elasticsearch/logs
+  jaeger:
+    image: jaegertracing/all-in-one:1.42.0
+    container_name: jaeger
+    restart: unless-stopped
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "9411:9411"
+    environment:
+      - SPAN_STORAGE_TYPE=elasticsearch
+      - ES_SERVER_URLS=http://elasticsearch:9200
+      - LOG_LEVEL=debug
+    networks:
+      - tiktok-network
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    environment:
+      TZ: "Asia/Shanghai"
+    restart: unless-stopped
+    ports:
+      - "2181:2181"
+    networks:
+      - tiktok-network
+  kafka:
+    image:  'bitnami/kafka:latest'
+    container_name: kafka
+    ports :
+      - "9092:9092"
+      - "9093:9093"
+      - "9098:9098"
+    environment :
+#      - KAFKA_ADVERTISED_HOST_NAME=kafka
+#      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+#      - BITNAMI_DEBUG=yes
+#      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+#      - TZ=Asia/Shanghai
+#      - KAFKA_ENABLE_KRAFT=yes
+#      - KAFKA_CFG_NODE_ID=1
+#      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+#      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+#      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+#      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+#      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+#      - KAFKA_CFG_BROKER_ID=1
+#      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+#      - ALLOW_PLAINTEXT_LISTENER=yes
+#      - KAFKA_KRAFT_CLUSTER_ID=bXkta2Fma2EtY2x1c3Rlcg==
+      # 开启JMX监控
+#      - JMX_PORT=9998
+#      - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka -Dcom.sun.management.jmxremote.rmi.port=9998
+      - BITNAMI_DEBUG=yes
+      # 启用KRaft模式必须设置下面三个属性
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      # broker id
+      - KAFKA_BROKER_ID=1
+      # listener的各种配置
+      - KAFKA_CFG_LISTENERS=CONTROLLER://:9094,BROKER://:9092,EXTERNAL://:9093
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,BROKER:PLAINTEXT,EXTERNAL:PLAINTEXT
+      # 注意EXTERNAL配置的是当前Docker所在的主机地址,BROKER可以使用Docker内部的网络地址即可
+      - KAFKA_CFG_ADVERTISED_LISTENERS=BROKER://kafka:9092,EXTERNAL://172.31.62.191:9093
+      # 内部各个broker之间通信用的listener
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=BROKER
+      # 用来进行选举的Controller服务器，如果有多个Controller则都需要写上，这里本机
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9094
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      # 开启JMX监控
+      - JMX_PORT=9998
+      - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka -Dcom.sun.management.jmxremote.rmi.port=9998
+
+    restart: unless-stopped
+
+    networks:
+      - tiktok-network
+    volumes:
+      - ./data/kafka/data:/bitnami/kafka
+#    depends_on:
+#      - zookeeper
+
+  gorse :
+    image : zhenghaoz/gorse-in-one:0.4.14
+    container_name : gorse
+    restart : unless-stopped
+    ports:
+     - 8086:8086   # gRPC port
+     - 8088:8088   # HTTP port
+    environment :
+      # Use Redis as cache storage backend.
+      GORSE_CACHE_STORE : redis://redis:6379
+      # Use MySQL as data storage backend.
+      GORSE_DATA_STORE : mysql://root:asdasd@tcp(mysql:3306)/gorse
+    command : >
+      -c /etc/gorse/config.toml
+      --log-path /var/log/gorse/master.log
+      --cache-path /var/lib/gorse/master_cache.data
+    volumes :
+      # Mount the configuration file.
+      - ./backend/script/gorse/config.toml:/etc/gorse/config.toml
+      - ./data/gorse/data:/var/log/gorse    # Mount log files in volume.
+      - ./data/gorse/log:/var/lib/gorse  # Mount cache files in volume.
+    networks :
+      - tiktok-network
+    depends_on :
+      - mysql
+      - redis
+  dtm:
+    image: yedf/dtm:latest
+    container_name: dtm
+    ports:
+      - "36790:36790"
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: asdasd
+      MYSQL_DB: dtm
+    entrypoint:
+      - "/app/dtm/dtm"
+      - "-c=/app/dtm/config/config.yaml"
+    volumes:
+      - ./backend/script/dtm/config.yaml:/app/dtm/config/config.yaml
+    depends_on:
+      - mysql
+    networks:
+      - tiktok-network
+    restart: unless-stopped
+  kibana :
+    image : docker.elastic.co/kibana/kibana:7.13.4
+    container_name : kibana
+    environment :
+      - elasticsearch.hosts=http://elasticsearch:9200
+      - TZ=Asia/Shanghai
+    restart : unless-stopped
+    networks :
+      - tiktok-network
+    ports :
+      - "5601:5601"
+    depends_on :
+      - elasticsearch
+  kafka-ui :
+    container_name : kafka-ui
+    image : provectuslabs/kafka-ui:latest
+    ports :
+      - 18080:8080
+    environment :
+      - KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS=kafka:9092
+      - KAFKA_CLUSTERS_0_NAME=my-kafka-cluster
+      - KAFKA_CLUSTERS_0_METRICS_PORT = 9998
+#      - DYNAMIC_CONFIG_ENABLED=true
+    volumes :
+      - ./backend/script/kafka_ui/config.yml:/etc/kafkaui/dynamic_config.yaml
+    depends_on:
+      - kafka
+    networks:
+      - tiktok-network
+#  mysql-gorse :
+#    image : mysql:8
+#    container_name : scooter-mysql-gorse
+#    command : --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-time_zone='+8:00'
+#    environment :
+#      MYSQL_ROOT_PASSWORD : scooter
+#      MYSQL_DATABASE : gorse
+#      TZ : Asia/Shangha
+#    networks :
+#      - scooter
+#    restart : unless-stopped
+
+networks:
+  tiktok-network:
+    driver: bridge
+

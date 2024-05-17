@@ -1,0 +1,145 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "",
+    "version": ""
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/live/list": {
+      "get": {
+        "operationId": "LiveList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/LiveListResp"
+            }
+          }
+        },
+        "tags": [
+          "Live"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/v1/live/start": {
+      "get": {
+        "operationId": "Start",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/StartResp"
+            }
+          }
+        },
+        "tags": [
+          "Live"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "LiveListResp": {
+      "type": "object",
+      "properties": {
+        "user_list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
+        }
+      },
+      "title": "LiveListResp",
+      "required": [
+        "user_list"
+      ]
+    },
+    "StartResp": {
+      "type": "object",
+      "properties": {
+        "status_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "status_msg": {
+          "type": "string"
+        },
+        "stream_url": {
+          "type": "string"
+        }
+      },
+      "title": "StartResp",
+      "required": [
+        "status_code",
+        "status_msg",
+        "stream_url"
+      ]
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "signature": {
+          "type": "string"
+        },
+        "is_follow": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "live_cover_url": {
+          "type": "string"
+        },
+        "live_url": {
+          "type": "string"
+        }
+      },
+      "title": "User",
+      "required": [
+        "uid",
+        "name",
+        "avatar",
+        "signature",
+        "is_follow",
+        "live_cover_url",
+        "live_url"
+      ]
+    }
+  },
+  "securityDefinitions": {
+    "apiKey": {
+      "type": "apiKey",
+      "description": "Enter JWT Bearer token **_only_**",
+      "name": "Authorization",
+      "in": "header"
+    }
+  }
+}

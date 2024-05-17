@@ -1,0 +1,158 @@
+syntax = "proto3";
+
+package feed;
+option go_package="./feed";
+
+message CreateVideoRequest {
+  uint32 actor_id = 1; // 用户id
+  string cover_url=2;
+  string url = 3; // 视频url
+  string title = 4; // 视频标题
+  uint32 category = 5; // 视频分类
+}
+
+message CreateVideoResponse {
+
+}
+
+message ListVideoRequest{
+  uint32 uid = 1; // 用户id
+  uint32 to_uid=2;
+}
+
+message ListVideoResponse{
+  repeated VideoInfo video_list = 1; // 视频列表
+}
+
+message CountVideoRequest{
+  uint32 user_id = 1; // 用户id
+}
+
+message CountVideoResponse{
+  uint32 count = 1; // 视频数量
+}
+message VideoInfo {
+  uint32 id = 1;
+  User author = 2;
+  string play_url = 3;
+  string cover_url = 4;
+  uint32 favorite_count = 5;
+  uint32 comment_count = 6;
+  bool is_favorite = 7;
+  string title = 8;
+  string create_time=9;
+  uint32 star_count = 10;
+  bool is_star = 11;
+  string duration=12;
+}
+
+message User {
+  uint32 id = 1; // 用户id
+  string nickname = 2; // 用户名称
+  optional uint32 follow_count = 3; // 关注总数
+  optional uint32 follower_count = 4; // 粉丝总数
+  bool is_follow = 5; // true-已关注，false-未关注
+  optional string avatar = 6; //用户头像
+  optional string background_image = 7; //用户个人页顶部大图
+  optional string signature = 8; //个人简介
+  optional uint32 total_favorited = 9; //获赞数量
+  optional uint32 work_count = 10; //作品数量
+  optional uint32 favorite_count = 11; //点赞数量
+  uint32 gender = 12; // 用户名称
+  int64 friend_count=13;
+}
+message ListFeedRequest {
+  uint32 actor_id = 1;
+  int64 num=2;
+  int64 offset=3;
+  int64 readVid=4;
+}
+
+message ListFeedResponse {
+  repeated VideoInfo video_list = 1;
+}
+message CategoryFeedRequest {
+  uint32 actor_id = 1;
+  uint32 category =2;
+}
+
+message CategoryFeedResponse {
+  repeated VideoInfo video_list = 1;
+}
+
+message VideoDurationReq{
+  string duration=1;
+  uint32 video_id=2;
+}
+message VideoDurationResp {
+
+}
+message HistoryReq{
+  int32 uid=1;
+}
+message HistoryResp{
+  repeated VideoInfo video_list = 1;
+}
+message NeighborsReq{
+  int32 vid=1;
+  int32 uid=2;
+}
+message NeighborsResp{
+  repeated VideoInfo video_list = 1;
+}
+message DeleteVideoReq{
+  int32 vid=1;
+}
+message DeleteVideoResp {
+}
+
+message Es_search_req {
+  int32 userId = 1;
+  string content = 2;
+}
+
+message Es_search_resp {
+  repeated VideoInfo video_list = 1;
+}
+message FindVideoReq{
+  int32 uid=1;
+  int32 vid=2;
+}
+message FindVideoResp {
+  VideoInfo video = 1;
+}
+
+message IncrCommentCountReq{
+  int64 id = 1;
+}
+
+message IncrCommentCountResp{
+
+}
+
+//message DecrCommentCountReq{
+//  int64 id = 1;
+//}
+//
+//message DecrCommentCountResp{
+//
+//}
+
+
+service Feed {
+  rpc CreateVideo(CreateVideoRequest) returns (CreateVideoResponse) {}
+  rpc ListVideo(ListVideoRequest) returns (ListVideoResponse) {}
+  rpc ListVideosByRecommend(ListFeedRequest) returns (ListFeedResponse);
+  rpc ListVideos(ListFeedRequest) returns (ListFeedResponse);
+  rpc ListCategoryVideos(CategoryFeedRequest) returns (CategoryFeedResponse);
+  rpc ListPopularVideos(ListFeedRequest) returns (ListFeedResponse);
+  rpc CreateVideoTest(CreateVideoRequest) returns (CreateVideoResponse) ;
+  rpc VideoDuration(VideoDurationReq) returns(VideoDurationResp);
+  rpc ListHistoryVideos(HistoryReq)returns(HistoryResp);
+  rpc ListNeighborVideos(NeighborsReq)returns(NeighborsResp);
+  rpc DeleteVideo(DeleteVideoReq) returns(DeleteVideoResp);
+  rpc SearchES(Es_search_req) returns(Es_search_resp);
+  rpc FindVideo(FindVideoReq)returns(FindVideoResp);
+  rpc IncrCommentCount(IncrCommentCountReq) returns(IncrCommentCountResp);
+  rpc IncrCommentCountRevert(IncrCommentCountReq) returns(IncrCommentCountResp);
+}

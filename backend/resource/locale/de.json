@@ -1,0 +1,16 @@
+{
+  "Success": "Erfolg",
+  "Server common error": "Allgemeiner Serverfehler",
+  "Request param error": "Anforderungsparamfehler",
+
+  "UserNotExistError": "Benutzername oder Passwort ist falsch",
+  "UserExistError": "Benutzername existiert bereits",
+  "UserUnExistError": "Benutzer existiert nicht",
+  "UserUploadImgError": "Benutzerbild-Upload fehlgeschlagen",
+  "UserUploadVideoError": "Benutzervideo-Upload fehlgeschlagen",
+
+  "RequestErr": {
+    "decFormat": "个性签名应在250字以内"
+  }
+
+}

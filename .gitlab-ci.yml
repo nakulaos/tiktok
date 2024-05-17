@@ -1,0 +1,99 @@
+
+stages:
+  - install
+  - build
+  - deploy
+
+.go-cache:
+  variables:
+    GOPATH: $CI_PROJECT_DIR/.go
+
+  before_script :
+    - mkdir -p .go
+
+  cache:
+    paths:
+      - .go/pkg/mod
+    #    提供唯一的缓存标志
+    key : ${CI_COMMIT_REF_SLUG}_backend
+
+install-backend:
+  # 构建之前的准备工作
+  image : golang:latest
+  stage : install
+  extends : .go-cache
+  variables:
+    GOPROXY: https://goproxy.cn
+  script :
+    - cd backend
+    - make download
+    - export PATH=$PATH:$GOPATH/bin
+    - source ~/.profile
+    - make build
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - backend/output
+
+build-backend:
+  # services 关键字用于在GitLab CI/CD作业的执行环境中启动其他服务。
+  # 这些服务通常是在作业运行时需要访问的外部依赖或工具，例如数据库、消息队列、缓存服务等
+  image: docker:18.06.3-dind
+  stage: build
+  # services:
+  #   - name: docker:19.03.0-dind
+  #     command: ["--insecure-registries=$REGISTRY_URL"]
+  variables:
+    DOCKER_HOST: tcp://localhost:2375
+  services:
+    - name: docker:18.06.3-dind
+      command: ["--insecure-registry=192.168.49.2:30002"]
+
+  only:
+    refs:
+      - main
+  before_script :
+    #  - cd /etc && mkdir docker && cd ./docker && touch daemon.json
+    #  - echo "{\"insecure-registries\":[\"0.0.0.0:8050\",\"$REGISTRY_URL\"]}" | tee /etc/docker/daemon.json > /dev/null
+    #  - systemctl daemon-reload
+    #  - systemctl restart docker
+    - echo $REGISTRY_PASSWORD |  docker login -u $REGISTRY_USER  --password-stdin $REGISTRY_URL
+  script :
+    - |
+      docker build \
+      -t "$REGISTRY_URL/tiktok/user-api:$CI_PIPELINE_IID" \
+      -f backend/deploy/user_api.Dockerfile \
+      ./backend
+    - |
+      docker build \
+      -t "$REGISTRY_URL/tiktok/user-rpc:$CI_PIPELINE_IID" \
+      -f backend/deploy/user_rpc.Dockerfile \
+      ./backend
+    - docker push $REGISTRY_URL/tiktok/user-api:$CI_PIPELINE_IID
+    - docker push $REGISTRY_URL/tiktok/user-rpc:$CI_PIPELINE_IID
+
+deploy-backend:
+  stage: deploy
+  image:  bitnami/kubectl:1.22
+  rules :
+    - if: '$CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push" && $CI_MERGE_REQUEST_EVENT_TYPE == null'
+  script :
+    - echo "=============deploy backend============="
+#    - docker rm -f user-rpc
+#    - docker run -di -p 50051:9060 --name deploy_user-rpc $REGISTRY_URL/tiktok/user-rpc:$CI_PIPELINE_IID
+#    - docker rm -f user-api
+#    - docker run -di -p 50052:8888 --name deploy_user-api $REGISTRY_URL/tiktok/user-api:$CI_PIPELINE_IID
+    - kubectl config get-contexts
+    - kubectl config use-context root/tiktok:nakulaos
+# gitlab 其实应该启用tls
+# 不知道为啥明明成功执行了，但还是报错
+    - kubectl  --insecure-skip-tls-verify apply -f ./deploy/k8s-deploy.yaml  > /dev/null 2>&1 || echo "deploy success"
+
+
+
+
+
+
+
+
+

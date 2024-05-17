@@ -1,0 +1,26 @@
+Name: Live
+Host: 0.0.0.0
+Port: 8894
+
+Auth:
+  AccessSecret: fajkfhakljflajfdaljflka
+  AccessExpire: 86400
+
+
+DB:
+  DataSource: root:asdasd@tcp(mysql:3306)/tiktok?charset=utf8&parseTime=True&loc=Local
+
+Casbin:
+  Dir: script/casbin/rbac_model.conf
+  Table: casbin_rule
+
+Cache:
+  - Host: redis:6379
+
+LiveRpc:
+  Etcd:
+    Hosts:
+      - etcd:2379
+    Key: live.rpc
+
+JWTPrefix: token_blacklist

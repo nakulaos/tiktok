@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gitlab
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitlab-svc
+  namespace: gitlab
+spec:
+  type: NodePort
+  ports:
+    - port: 443
+      targetPort: 443
+      nodePort: 31443
+      name: https
+    - port: 80
+      nodePort: 31080
+      targetPort: 80
+      name: http
+  selector:
+    app: gitlab
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitlab-dep
+  namespace: gitlab
+spec:
+  selector:
+    matchLabels:
+      app: gitlab
+  revisionHistoryLimit: 2
+  template:
+    metadata:
+      labels:
+        app: gitlab
+    spec:
+      containers:
+        - image: gitlab/gitlab-ce:15.6.0-ce.0
+          name: gitlab
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 443
+              name: https
+            - containerPort: 80
+              name: http
+            - containerPort: 22
+              name: ssh
+          volumeMounts:
+            - name: gitlab-config
+              mountPath: /etc/gitlab
+            - name: gitlab-logs
+              mountPath: /var/log/gitlab
+            - name: gitlab-data
+              mountPath: /var/opt/gitlab
+      volumes:
+        - name: gitlab-config
+          nfs:
+            server: 172.31.62.191
+            path: /nfsroot/gitlab/config
+        - name: gitlab-logs
+          nfs:
+            server: 172.31.62.191
+            path: /nfsroot/gitlab/logs
+        - name: gitlab-data
+          nfs:
+            server: 172.31.62.191
+            path: /nfsroot/gitlab/data

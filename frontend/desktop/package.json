@@ -1,0 +1,43 @@
+{
+  "name": "desktop",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev-electron": "cross-env NODE_ENV=development electron  main/index.js",
+    "prod-electron": "cross-env NODE_ENV=production electron  main/index.js",
+    "build-electron-win64": "electron-builder -w --x64"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "electron": "^30.0.5",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "productName": "tiktok",
+    "appId": "tiktok.electron.app",
+    "files": [
+      "build/**/*",
+      "main/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "tiktok"
+    },
+    "win": {
+      "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+      "target": "nsis"
+    }
+  }
+}

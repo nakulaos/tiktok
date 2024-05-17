@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package live;
+option go_package="./live";
+
+message StartLiveRequest {
+  int64 uid = 1; // 用户id
+}
+
+message StartLiveResponse {
+  string stream_url=1;
+}
+
+message ListLiveRequest{
+  int64 uid = 1; // 用户id
+}
+
+message ListLiveResponse{
+  repeated User user_list = 1;
+}
+
+message User {
+  int64 id = 1; // 用户id
+  string name = 2; // 用户名称
+  bool is_follow = 3; // true-已关注，false-未关注
+  string avatar = 4; //用户头像
+  string signature = 5; //个人简介
+  string live_url=6;
+  string live_cover_url=7;
+}
+service Live {
+  //开启直播
+  rpc StartLive(StartLiveRequest) returns (StartLiveResponse) {}
+  //查看直播列表
+  rpc ListVideo(ListLiveRequest) returns (ListLiveResponse) {}
+}
